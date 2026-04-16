@@ -87,4 +87,4 @@ class StandardRoom(Room):
     def get_info(self) -> str:
         return (f"Стандартний номер №{self.number}, ціна {self.price_per_night} грн"
                 f", статус: {self.status.value}, гість: {self.guest.name if self.guest else 'немає'}"
-                ", зручності: Wi-Fi, телевізор, кондиціонер, двомісна кровать")
+                ", зручності: Wi-Fi, телевізор, кондиціонер, двомісна ліжко")

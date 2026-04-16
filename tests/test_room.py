@@ -253,7 +253,10 @@ class TestStandardRoom(unittest.TestCase):
         self.assertEqual(room.status, RoomStatus.FREE)
         self.assertIsNone(room.guest)
         self.assertEqual(room.get_info(),
-                         "Стандартний номер №101, ціна 1200.0 грн, статус: free, гість: немає, зручності: Wi-Fi, телевізор, кондиціонер, двомісна кровать")
+                         "Стандартний номер №101, ціна 1200.0 грн, "
+                         "статус: free, гість: немає, зручності: Wi-Fi, "
+                         "телевізор, кондиціонер, двомісна ліжко"
+                         )
 
 
 if __name__ == "__main__":

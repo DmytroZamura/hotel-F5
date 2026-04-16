@@ -3,7 +3,7 @@ from utils.validators import validate_non_empty_string, validate_email, validate
 
 class Guest:
     """Клас для опису гостя готелю"""
-    def __init__(self, name: str, passport: str, email: str, phone_number: str) -> None:
+    def __init__(self, name: str, passport, email, phone_number) -> None:
         self.name = validate_non_empty_string(name, "Ім'я гостя")
         self.passport = validate_non_empty_string(passport, "Номер паспорта")
         self.email = validate_email(email)
@@ -14,7 +14,6 @@ class Guest:
     def __repr__(self) -> str:
         return (
             f"Guest(name={self.name!r}, passport={self.passport!r}, email={self.email!r}, phone_number={self.phone_number!r})"
-
         )
 
     def __str__(self):

@@ -12,6 +12,8 @@ def validate_non_empty_string(value: str, field_name: str) -> str:
     Raises:
         ValueError: Якщо рядок порожній або складається лише з пробілів.
     """
+    if not isinstance(value, str):
+        raise TypeError(f"{field_name} має бути рядком")
     if not value or not value.strip():
         raise ValueError(f"{field_name} не може бути порожнім")
     return value.strip()
