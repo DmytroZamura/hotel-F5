@@ -79,3 +79,12 @@ class Room(ABC):
         if not isinstance(other, Room):
             return NotImplemented
         return self.number == other.number
+
+
+class StandardRoom(Room):
+    """Стандартний номер."""
+
+    def get_info(self) -> str:
+        return (f"Стандартний номер №{self.number}, ціна {self.price_per_night} грн"
+                f", статус: {self.status.value}, гість: {self.guest.name if self.guest else 'немає'}"
+                ", зручності: Wi-Fi, телевізор, кондиціонер, двомісна кровать")
