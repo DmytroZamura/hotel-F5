@@ -4,7 +4,7 @@ import unittest
 
 from models.enums import RoomStatus
 from models.guest import Guest
-from models.room import Room
+from models.room import Room, StandardRoom
 
 
 # --- Допоміжний конкретний підклас (бо Room — абстрактний) ---
@@ -242,6 +242,18 @@ class TestDunderMethods(unittest.TestCase):
         """get_info повертає рядок з інформацією."""
         info = self.room.get_info()
         self.assertIn("101", info)
+
+
+class TestStandardRoom(unittest.TestCase):
+
+    def test_get_info(self) -> None:
+        room = StandardRoom(number=101, price_per_night=1200.0)
+        self.assertEqual(room.number, 101)
+        self.assertEqual(room.price_per_night, 1200.0)
+        self.assertEqual(room.status, RoomStatus.FREE)
+        self.assertIsNone(room.guest)
+        self.assertEqual(room.get_info(),
+                         "Стандартний номер №101, ціна 1200.0 грн, статус: free, гість: немає, зручності: Wi-Fi, телевізор, кондиціонер, двомісна кровать")
 
 
 if __name__ == "__main__":
