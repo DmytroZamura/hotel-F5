@@ -12,8 +12,26 @@ def validate_non_empty_string(value: str, field_name: str) -> str:
     Raises:
         ValueError: Якщо рядок порожній або складається лише з пробілів.
     """
+    if not isinstance(value, str):
+        raise TypeError(f"{field_name} має бути рядком")
     if not value or not value.strip():
         raise ValueError(f"{field_name} не може бути порожнім")
+    return value.strip()
+
+
+def validate_optional_string(value: str, field_name: str) -> str:
+    """Перевірити, що значення є рядком (може бути порожнім), і повернути stripped версію.
+
+    Args:
+        value: Значення для перевірки.
+        field_name: Назва поля (для повідомлення про помилку).
+    Returns:
+        Очищений рядок (stripped).
+    Raises:
+        TypeError: Якщо значення не є рядком.
+    """
+    if not isinstance(value, str):
+        raise TypeError(f"{field_name} має бути рядком")
     return value.strip()
 
 
@@ -47,6 +65,25 @@ def validate_positive_float(value: float, field_name: str) -> float:
     return float(value)
 
 
+def validate_non_negative_float(value: float, field_name: str) -> float:
+    """Перевірити, що числове значення >= 0.
+
+    Args:
+        value: Значення для перевірки.
+        field_name: Назва поля (для повідомлення про помилку).
+    Returns:
+        Значення як float.
+    Raises:
+        TypeError: Якщо значення не є числом.
+        ValueError: Якщо значення < 0.
+    """
+    if not isinstance(value, (int, float)):
+        raise TypeError(f"{field_name} має бути числом")
+    if value < 0:
+        raise ValueError(f"{field_name} не може бути від'ємним")
+    return float(value)
+
+
 def validate_range(value: float, low: float, high: float, field_name: str) -> float:
     """Перевірити, що значення знаходиться в діапазоні [low, high].
     Raises:
@@ -60,10 +97,10 @@ def validate_range(value: float, low: float, high: float, field_name: str) -> fl
 def validate_type(value: Any, expected_type: type, field_name: str) -> Any:
     """Перевірити, що значення є екземпляром expected_type.
     Raises:
-        ValueError:.
+        TypeError: Якщо значення не є екземпляром expected_type.
     """
     if not isinstance(value, expected_type):
-        raise ValueError(f"{field_name} має бути типу {expected_type.__name__}")
+        raise TypeError(f"{field_name} має бути типу {expected_type.__name__}, отримано {type(value).__name__}")
     return value
 
 

@@ -72,6 +72,40 @@ class TestRoomCreation(unittest.TestCase):
         with self.assertRaises(ValueError):
             ConcreteRoom(number=None, price_per_night=500.0)
 
+    def test_invalid_price_zero_raises(self) -> None:
+        """Нульова ціна за ніч — ValueError."""
+        with self.assertRaises(ValueError):
+            ConcreteRoom(number=1, price_per_night=0)
+
+    def test_invalid_price_negative_raises(self) -> None:
+        """Від'ємна ціна за ніч — ValueError."""
+        with self.assertRaises(ValueError):
+            ConcreteRoom(number=1, price_per_night=-100.0)
+
+    def test_invalid_status_type_raises(self) -> None:
+        """Рядок замість RoomStatus — TypeError."""
+        room = ConcreteRoom(number=1, price_per_night=500.0)
+        with self.assertRaises(TypeError):
+            room.status = "free"
+
+    def test_invalid_guest_type_raises(self) -> None:
+        """Рядок замість Guest — TypeError."""
+        room = ConcreteRoom(number=1, price_per_night=500.0)
+        with self.assertRaises(TypeError):
+            room.guest = "не гість"
+
+    def test_setter_number_invalid_raises(self) -> None:
+        """Зміна номера на від'ємний через сетер — ValueError."""
+        room = ConcreteRoom(number=1, price_per_night=500.0)
+        with self.assertRaises(ValueError):
+            room.number = -5
+
+    def test_setter_price_invalid_raises(self) -> None:
+        """Зміна ціни на від'ємну через сетер — ValueError."""
+        room = ConcreteRoom(number=1, price_per_night=500.0)
+        with self.assertRaises(ValueError):
+            room.price_per_night = -100.0
+
 
 # --- Тести заселення ---
 
@@ -100,8 +134,8 @@ class TestCheckIn(unittest.TestCase):
             self.room.check_in(another_guest)
 
     def test_check_in_not_guest_raises(self) -> None:
-        """Заселення не-Guest об'єкта — AttributeError."""
-        with self.assertRaises(AttributeError):
+        """Заселення не-Guest об'єкта — TypeError."""
+        with self.assertRaises(TypeError):
             self.room.check_in("не гість")
 
 
@@ -157,12 +191,11 @@ class TestSerialization(unittest.TestCase):
     def test_to_dict_free_room(self) -> None:
         """Словник вільного номера містить правильні дані."""
         data = self.room.to_dict()
-        self.assertEqual(data, {
-            "number": 101,
-            "price_per_night": 1200.0,
-            "status": "free",
-            "guest": None,
-        })
+        self.assertEqual(data["number"], 101)
+        self.assertEqual(data["price_per_night"], 1200.0)
+        self.assertEqual(data["status"], "free")
+        self.assertIsNone(data["guest"])
+        self.assertIn("type", data)
 
     def test_to_dict_occupied_room(self) -> None:
         """Словник зайнятого номера містить дані гостя."""
@@ -172,38 +205,41 @@ class TestSerialization(unittest.TestCase):
         self.assertEqual(data["guest"]["name"], self.guest.name)
 
     def test_from_dict_restores_room(self) -> None:
-        """from_dict відновлює стан номера зі словника."""
-        source = ConcreteRoom(number=202, price_per_night=800.0)
+        """create_room_from_dict відновлює стан номера зі словника."""
+        from models.room import StandardRoom
+        source = StandardRoom(number=202, price_per_night=800.0)
         source.check_in(self.guest)
         data = source.to_dict()
 
-        self.room.from_dict(data)
-        self.assertEqual(self.room.number, 202)
-        self.assertEqual(self.room.price_per_night, 800.0)
-        self.assertEqual(self.room.status, RoomStatus.OCCUPIED)
-        self.assertIsNotNone(self.room.guest)
-        self.assertEqual(self.room.guest.name, self.guest.name)
+        restored = Room.create_room_from_dict(data)
+        self.assertEqual(restored.number, 202)
+        self.assertEqual(restored.price_per_night, 800.0)
+        self.assertEqual(restored.status, RoomStatus.OCCUPIED)
+        self.assertIsNotNone(restored.guest)
+        self.assertEqual(restored.guest.name, self.guest.name)
 
     def test_from_dict_without_guest(self) -> None:
-        """from_dict коректно працює без гостя."""
-        data = {"number": 303, "price_per_night": 600.0, "status": "free"}
-        self.room.from_dict(data)
-        self.assertIsNone(self.room.guest)
-        self.assertEqual(self.room.status, RoomStatus.FREE)
+        """create_room_from_dict коректно працює без гостя."""
+        from models.room import StandardRoom
+        data = {"type": "StandardRoom", "number": 303, "price_per_night": 600.0, "status": "free", "guest": None}
+        restored = Room.create_room_from_dict(data)
+        self.assertIsNone(restored.guest)
+        self.assertEqual(restored.status, RoomStatus.FREE)
 
     def test_from_dict_invalid_status_raises(self) -> None:
-        """from_dict з невалідним статусом — ValueError."""
-        data = {"number": 1, "price_per_night": 100.0, "status": "unknown"}
+        """create_room_from_dict з невалідним статусом — ValueError."""
+        data = {"type": "StandardRoom", "number": 1, "price_per_night": 100.0, "status": "unknown", "guest": None}
         with self.assertRaises(ValueError):
-            self.room.from_dict(data)
+            Room.create_room_from_dict(data)
 
     def test_to_dict_round_trip(self) -> None:
-        """Дані після to_dict → from_dict зберігаються коректно."""
-        self.room.check_in(self.guest)
-        data = self.room.to_dict()
-        new_room = ConcreteRoom(number=999, price_per_night=1.0)
-        new_room.from_dict(data)
-        self.assertEqual(new_room.to_dict(), data)
+        """Дані після to_dict → create_room_from_dict зберігаються коректно."""
+        from models.room import StandardRoom
+        room = StandardRoom(number=101, price_per_night=1200.0)
+        room.check_in(self.guest)
+        data = room.to_dict()
+        restored = Room.create_room_from_dict(data)
+        self.assertEqual(restored.to_dict(), data)
 
 
 # --- Тести __eq__, __str__, __repr__ ---
@@ -253,7 +289,10 @@ class TestStandardRoom(unittest.TestCase):
         self.assertEqual(room.status, RoomStatus.FREE)
         self.assertIsNone(room.guest)
         self.assertEqual(room.get_info(),
-                         "Стандартний номер №101, ціна 1200.0 грн, статус: free, гість: немає, зручності: Wi-Fi, телевізор, кондиціонер, двомісна кровать")
+                         "Стандартний номер №101, ціна 1200.0 грн, "
+                         "статус: free, гість: немає, зручності: Wi-Fi, "
+                         "телевізор, кондиціонер, двомісна ліжко"
+                         )
 
 
 if __name__ == "__main__":

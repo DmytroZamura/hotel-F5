@@ -1,0 +1,100 @@
+/* Основні стилі для HTML-візитівок готелю та мережі */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+}
+
+.description {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.contacts {
+    padding: 1rem 2rem;
+    background: #ecf0f1;
+}
+
+.contacts p {
+    margin: 0.3rem 0;
+}
+
+.rooms,
+.hotels {
+    padding: 1.5rem 2rem;
+}
+
+.rooms h2,
+.hotels h2 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.room-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin: 0.5rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.room-card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.hotels ul {
+    list-style: none;
+    padding: 0;
+}
+
+.hotels li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.hotels a {
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.hotels a:hover {
+    text-decoration: underline;
+    color: #27ae60;
+}
+
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: #888;
+    border-top: 1px solid #ddd;
+    margin-top: 2rem;
+}
+
