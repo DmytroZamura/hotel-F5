@@ -145,3 +145,48 @@ class TestGuest(TestCase):
             Guest(**new_dict)
 
         self.assertEqual(str(context.exception), "Номер паспорта не може бути порожнім")
+
+    # --- Тести валідації типів ---
+
+    def test_name_type_validation(self):
+        """Ім'я має бути рядком — TypeError."""
+        new_dict = {**self.base_dict, "name": 123}
+        with self.assertRaises(TypeError):
+            Guest(**new_dict)
+
+    def test_passport_type_validation(self):
+        """Паспорт має бути рядком — TypeError."""
+        new_dict = {**self.base_dict, "passport": 123}
+        with self.assertRaises(TypeError):
+            Guest(**new_dict)
+
+    def test_loyalty_points_negative(self):
+        """Від'ємні бали лояльності — ValueError."""
+        guest = Guest(**self.base_dict)
+        with self.assertRaises(ValueError):
+            guest.loyalty_points = -10
+
+    def test_loyalty_points_type(self):
+        """Бали лояльності мають бути int — ValueError."""
+        guest = Guest(**self.base_dict)
+        with self.assertRaises(ValueError):
+            guest.loyalty_points = "сто"
+
+    def test_setter_name_empty(self):
+        """Зміна імені на порожній рядок через сетер — ValueError."""
+        guest = Guest(**self.base_dict)
+        with self.assertRaises(ValueError):
+            guest.name = ""
+
+    def test_setter_email_invalid(self):
+        """Зміна email на невалідний через сетер — ValueError."""
+        guest = Guest(**self.base_dict)
+        with self.assertRaises(ValueError):
+            guest.email = "bad_email"
+
+    def test_setter_phone_short(self):
+        """Зміна телефону на короткий через сетер — ValueError."""
+        guest = Guest(**self.base_dict)
+        with self.assertRaises(ValueError):
+            guest.phone_number = "123"
+

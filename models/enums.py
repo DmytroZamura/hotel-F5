@@ -8,4 +8,12 @@ class RoomStatus(Enum):
     RESERVED = "reserved"
 
 
+class BookingStatus(Enum):
+    """Статус бронювання."""
+    CONFIRMED = "confirmed"
+    CHECKED_IN = "checked_in"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+
 

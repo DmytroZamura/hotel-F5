@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ hotel_name }}</title>
+    <style>
+{{ css }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏨 {{ hotel_name }}</h1>
+        <p class="description">{{ description }}</p>
+    </header>
+
+    <section class="contacts">
+        <p>📍 {{ address }}</p>
+        <p>📞 {{ phone }}</p>
+        <p>✉️ {{ email }}</p>
+    </section>
+
+    <section class="rooms">
+        <h2>Наші номери</h2>
+{{ rooms_html }}
+    </section>
+
+    <footer>
+        <p>© 2026 {{ hotel_name }}</p>
+    </footer>
+</body>
+</html>
+
